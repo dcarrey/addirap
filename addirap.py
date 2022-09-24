@@ -30,9 +30,7 @@ def main(parametres):
     maxValue = 9
     if len(parametres) > 1:
         for param in parametres:
-            print(param)
             tab = param.split("=")
-            print(tab)
             if tab[0] == "operation":
                 operation = tab[1]
             elif tab[0] == "nbOperations":
