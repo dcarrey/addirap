@@ -1,0 +1,117 @@
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Addirap</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/moment.min.js"></script>
+  </head>
+
+  <body>
+    <nav class="navbar navbar-dark bg-dark">
+      <div class="container-fluid">
+        <a class="navbar-brand" href="#">Addirap</a>
+      </div>
+    </nav>
+
+    <div class="container container-decompte">
+      <div class="row">
+        <div class="col-md-12">
+          <p class="card-text">
+            <center>
+              <span style="font-size:50px;color:blue">Tiens-toi prêt !!</span>
+              <br>
+              <span class="compteur" style="font-size:100px;color:blue">5</span>
+            </center>
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="container container-operations d-none mt-5">
+      <div class="row">
+        <div class="col-md-12">
+          <div class="container">
+            <div class="row">
+              <div class="card col-md-8">
+                <div class="card-body">
+                  <h5 class="card-title">
+                    <form class="row g-3" action="/newGrid" method="POST">
+                      <div class="col-auto">
+                        <label for="" class="form-label">Niveau</label>
+                        <select class="form-select" name="niveau" id="niveau">
+                          <option value="facile">facile</option>
+                          <option value="moyen">moyen</option>
+                          <option value="difficile">difficile</option>
+                        </select>
+                      </div>
+                      <div class="col-md-2">
+                          <label for="" class="form-label">Opérations</label>
+                          <input class="form-control" type="number" name="nbOperations" value={{operations|length}}>
+                      </div>
+                      <div class="col-md-3">
+                        <label for="" class="form-label">Durée</label>
+                        <select class="form-select" name="duree" id="duree">
+                          <option value="60"  {% if duree == 60 %}selected{% endif %}>1 minute</option>
+                          <option value="120" {% if duree == 120 %}selected{% endif %}>2 minutes</option>
+                          <option value="180" {% if duree == 180 %}selected{% endif %}>3 minutes</option>
+                        </select>
+                      </div>
+                      <div class="col-md-3">
+                        <label for="" class="form-label">Opération</label>
+                        <select class="form-select" name="operation">
+                          <option value="addition" {% if operation == 'addition' %}selected{% endif %}>addition</option>
+                          <option value="soustraction" {% if operation == 'soustraction' %}selected{% endif %}>soustraction</option>
+                        </select>
+                      </div>
+                      <div class="col-md-1">
+                        <label for="" class="form-label">&nbsp;</label>
+                        <input class="btn btn-primary" type="submit" value="Go">
+                      </div>
+                    </form>
+                    <a href="/getDocx">Télécharger une grille aléatoire</a>
+                  </h5>
+                </div>
+              </div>
+              <div class="card col-md-2">
+                <div class="card-body">
+                  <h5 class="card-title"><center>Temps : <span class="compteur">5</span></center></h5>
+                </div>
+              </div>
+              <div class="card col-md-2 p-0">
+                <div class="card-body total">
+                  <h5 class="card-title">
+                    <center>Ton score : <span id=total>.</span>/<span id=nbOperations>{{operations|length}}</span>
+                    </center>
+                  </h5>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-12 mt-2">
+          <div class="container">
+            <div class="row">
+            {% for item in operations %}
+              <div class="card col-md-2">
+                <div class="card-body">
+                  <h6 class="card-title">{{item[0]}} {{symbole}} {{ item[1]}} = <input name="resultat" data-op="{{symbole}}" data-op1={{item[0]}} data-op2={{item[1]}} style="width:40px;margin-right:10px;" readonly></h6>
+                </div>
+              </div>
+            {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

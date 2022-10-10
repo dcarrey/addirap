@@ -1,0 +1,16 @@
+.success{
+  background-color:green;
+  color:white;
+}
+.danger{
+  background-color:red;
+  color:white;
+}
+.warning{
+  background-color:orange;
+  color:white;
+}
+
+#total,#nbOperations,#compteur{
+  font-size:large;
+}

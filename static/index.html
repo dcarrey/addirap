@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+    <meta name="description" content="">
+    <meta name="author" content="">
+    <title>Mon portefeuille</title>
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+    <link href="css/custom.css" rel="stylesheet">
+    <script src="js/jquery-3.6.1.min.js"></script>
+    <script src="js/util.js"></script>
+    <script src="js/moment.min.js"></script>
+  </head>
+
+  <body>
+
+    <div class="container test-inf8214">
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <form class="form-inline">
+            <div class="form-group">
+              <input type="text" readonly class="form-control-plaintext" value="Ajouter un symbole">
+            </div>
+            <div class="form-group">
+              <input type="text" class="form-control" id="symbole" placeholder="symbole ex: aapl">
+            </div>
+            <input type="button" id="ajouter-symbole" class="btn btn-primary" value="Ajouter">
+          </form>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+    </div>
+
+    <div class="container test-inf8214">
+      <div class="row">
+        <div class="col-md-3"></div>
+        <div class="col-md-6">
+          <table id="mes-symboles" class="table">
+            <thead>
+              <tr>
+                <th scope="col">symbole</th>
+                <th scope="col">valeur</th>
+              </tr>
+            </thead>
+            <tbody>
+            </tbody>
+          </table>
+        </div>
+        <div class="col-md-3"></div>
+      </div>
+    </div>
+
+
+    <footer class="footer fixed-bottom" style="text-align:center">
+      <p>&copy; 2022 Dcarrey Solutions informatiques</p>
+    </footer>
+
+  </body>
+</html>

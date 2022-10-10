@@ -9,12 +9,18 @@ from random import randint
 from docx import Document
 from docx.shared import Inches, Pt, Cm
 from docx.enum.section import WD_SECTION,WD_ORIENT
+from docx.enum.text import WD_ALIGN_PARAGRAPH,WD_BREAK
 from docx.oxml.ns import qn
 import sys
 import datetime
+import json
 
 letter = {"width":21.51,"height":27.94}
+half_letter = {"width":21.51,"height":13.97}
 symboles = {"addition":"+","soustraction":"-"}
+
+def getSymbole(operation):
+    return symboles[operation]
 
 def validateOperation(operation):
     if operation not in ['addition','soustraction']:
@@ -61,37 +67,72 @@ def generate(nbOperations=50,minValue=1,maxValue=9,operation="addition"):
 def formatDocxSection(doc):
     sections = doc.sections
     for section in sections:
-        section.orientation = WD_ORIENT.LANDSCAPE
-        section.page_width = Cm(letter["height"])
-        section.page_height = Cm(letter["width"])
-        section.top_margin = Cm(1)
-        section.bottom_margin = Cm(1)
-        section.left_margin = Cm(0.5)
-        section.right_margin = Cm(0.5)
+        # section.orientation = WD_ORIENT.LANDSCAPE
+        # section.page_width = Cm(letter["width"])
+        # section.page_height = Cm(letter["height"])
+        section.top_margin = Cm(0)
+        section.bottom_margin = Cm(1.5)
+        section.left_margin = Cm(1.5)
+        section.right_margin = Cm(1.5)
 
-def afficher(mode,operations,operation="addition",outputfile="addirap.docx"):
+def ajoutLigneDecoupe(doc):
+    p1 = doc.add_heading("",6)
+    p1 = doc.add_heading("-"*122)
+    p1.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+
+def saveDocx(mode,operations,operation,outputfile):
     doc = Document()
-    section = doc.add_section(WD_SECTION.CONTINUOUS)
-    section.start_type
-    p1 = doc.add_heading("Niveau : " + mode + "\tOpération : " + operation)
+    for i in range(int(len(operations)/50)):
+        print(i)
 
-    section = doc.add_section(WD_SECTION.CONTINUOUS)
-    section.start_type
-    section = doc.sections[2]
-    style = doc.styles['Normal']
-    font = style.font
-    font.name = 'Arial'
-    font.size = Pt(14)
 
-    # Set to 2 column layout
-    sectPr = section._sectPr
-    cols = sectPr.xpath('./w:cols')[0]
-    cols.set(qn('w:num'),'3')
+        section = doc.add_section(WD_SECTION.CONTINUOUS)
+        section.start_type
 
-    for key in operations:
-        p1 = doc.add_paragraph(str(key[0])+" "+symboles[operation]+" "+str(key[1])+" =")
+        # Set to 2 column layout
+        sectPr = section._sectPr
+        cols = sectPr.xpath('./w:cols')[0]
+        cols.set(qn('w:num'),'1')
+
+        if i>0:
+            ajoutLigneDecoupe(doc)
+
+        p1 = doc.add_heading("Niveau : " + mode + "\tOpération : " + operation + " \tdurée : ____ \tMon score : ____/" + str(len(operations[i*50:(i+1)*50])))
+        p1.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
+        run = p1.add_run()
+        run.add_break(WD_BREAK.LINE)
+        section = doc.add_section(WD_SECTION.CONTINUOUS)
+        section.start_type
+
+        section = doc.sections[2]
+        style = doc.styles['Normal']
+        font = style.font
+        font.name = 'Arial'
+        font.size = Pt(13)
+
+        # Set to 2 column layout
+        sectPr2 = section._sectPr
+        cols2 = sectPr.xpath('./w:cols')[0]
+        cols2.set(qn('w:num'),'5')
+
+        for key in operations[i*50:(i+1)*50]:
+            p1 = doc.add_paragraph(str(key[0])+" "+symboles[operation]+" "+str(key[1])+" = ____")
     formatDocxSection(doc)
     doc.save(outputfile)
+
+def saveJson(niveau,operations,operation,outputfile):
+    result = {"operation":operation,"niveau":niveau,"operations":operations}
+    json_object = json.dumps(result)
+    out = open(outputfile,"w+")
+    print(json_object,file=out)
+    out.close()
+
+
+def afficher(format,niveau,operations,operation="addition",outputfile="addirap.docx"):
+    if format == "docx":
+        saveDocx(niveau,operations,operation,outputfile)
+    elif format == "json":
+        saveJson(niveau,operations,operation,outputfile)
 
 def validerNiveau(niveau,min,max):
     if niveau == "facile":
@@ -107,7 +148,7 @@ def validerNiveau(niveau,min,max):
 
 def main(parametres):
     nbOperations=50
-    operation = "+"
+    operation = "addition"
     minValue = 1
     maxValue = 9
     niveau = "moyen"
@@ -118,7 +159,7 @@ def main(parametres):
             if tab[0] == "operation":
                 operation = validateOperation(tab[1])
             elif tab[0] == "nbOperations":
-                nbOperations = tab[1]
+                nbOperations = int(tab[1])
             elif tab[0] == "minValue":
                 minValue = int(tab[1])
             elif tab[0] == "maxValue":
@@ -132,9 +173,8 @@ def main(parametres):
                 print("parametre inconnu :",tab[0])
 
     operations = generate(nbOperations=nbOperations,minValue=minValue,maxValue=maxValue,operation=operation)
-    if format == "docx":
-        outputfile = "addirap-" + operation + "-" + niveau + "-" + datetime.datetime.now().strftime("%Y%m%d") + ".docx"
-        afficher(niveau,operations,operation=operation,outputfile=outputfile)
+    outputfile = "addirap-" + operation + "-" + niveau + "-" + datetime.datetime.now().strftime("%Y%m%d") + "." + format
+    afficher(format,niveau,operations,operation=operation,outputfile=outputfile)
 
 if __name__ == "__main__":
     main(sys.argv)
