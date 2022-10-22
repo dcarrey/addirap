@@ -20,6 +20,17 @@ letter = {"width":21.51,"height":27.94}
 half_letter = {"width":21.51,"height":13.97}
 symboles = {"addition":"+","soustraction":"-"}
 
+def help():
+    chaine="""
+    operation=[addition|soustraction]
+    nbOperations=[entier]
+    format=[docx(défaut)|json]
+    minValue=[1(défaut)-9]
+    maxValue=[1(défaut)-9]:addition [1-18]:soustraction
+    niveau=[facile|moyen(défaut)|difficile]
+    """
+    print(chaine)
+    
 def getSymbole(operation):
     return symboles[operation]
 
@@ -170,12 +181,15 @@ def main(parametres):
                 (minValue,maxValue) = validerNiveau(tab[1],minValue,maxValue)
             elif tab[0] == "format":
                 format = tab[1]
+            elif tab[0] == "help":
+                help()
+                sys.exit(0)
             else:
                 print("parametre inconnu :",tab[0])
     
     #= valeur par défaut
     if operation == "soustraction" and maxValue==-1:
-        maxValue = 19
+        maxValue = 18
     if minValue == -1:
         minValue=1
     if maxValue == -1:
