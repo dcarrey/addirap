@@ -5,6 +5,7 @@
 = date : 2022
 =============================================================================
 """
+from pydoc import Doc
 from random import randint
 from docx import Document
 from docx.shared import Inches, Pt, Cm
@@ -29,10 +30,10 @@ def validateOperation(operation):
     return operation
 
 
-def soustraction(minValue=1,maxValue=9):
+def soustraction(minValue=1,maxValue=19):
     while True:
         a = randint(minValue,maxValue)
-        b = randint(minValue,maxValue)
+        b = randint(1,9)
         if (a-b) >= 0:
             return (a,b)
         elif (b-a) >= 0:
@@ -76,26 +77,16 @@ def formatDocxSection(doc):
         section.right_margin = Cm(1.5)
 
 def ajoutLigneDecoupe(doc):
-    p1 = doc.add_heading("",6)
-    p1 = doc.add_heading("-"*122)
+    p1 = doc.add_paragraph("-"*122)
     p1.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
 
 def saveDocx(mode,operations,operation,outputfile):
     doc = Document()
     for i in range(int(len(operations)/50)):
-        print(i)
-
-
         section = doc.add_section(WD_SECTION.CONTINUOUS)
         section.start_type
 
-        # Set to 2 column layout
         sectPr = section._sectPr
-        cols = sectPr.xpath('./w:cols')[0]
-        cols.set(qn('w:num'),'1')
-
-        if i>0:
-            ajoutLigneDecoupe(doc)
 
         p1 = doc.add_heading("Niveau : " + mode + "\tOpération : " + operation + " \tdurée : ____ \tMon score : ____/" + str(len(operations[i*50:(i+1)*50])))
         p1.paragraph_format.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -108,7 +99,7 @@ def saveDocx(mode,operations,operation,outputfile):
         style = doc.styles['Normal']
         font = style.font
         font.name = 'Arial'
-        font.size = Pt(13)
+        font.size = Pt(12)
 
         # Set to 2 column layout
         sectPr2 = section._sectPr
@@ -116,7 +107,17 @@ def saveDocx(mode,operations,operation,outputfile):
         cols2.set(qn('w:num'),'5')
 
         for key in operations[i*50:(i+1)*50]:
-            p1 = doc.add_paragraph(str(key[0])+" "+symboles[operation]+" "+str(key[1])+" = ____")
+            p1 = doc.add_paragraph(str(key[0])+" "+symboles[operation]+" "+str(key[1])+" = __")
+
+        section = doc.add_section(WD_SECTION.CONTINUOUS)
+        section.start_type
+
+        # Set to 2 column layout
+        #sectPr = section._sectPr
+        if i==0:
+            cols = sectPr.xpath('./w:cols')[0]
+            cols.set(qn('w:num'),'1')
+
     formatDocxSection(doc)
     doc.save(outputfile)
 
@@ -149,8 +150,8 @@ def validerNiveau(niveau,min,max):
 def main(parametres):
     nbOperations=50
     operation = "addition"
-    minValue = 1
-    maxValue = 9
+    minValue = -1
+    maxValue = -1
     niveau = "moyen"
     format = "docx"
     if len(parametres) > 1:
@@ -171,6 +172,14 @@ def main(parametres):
                 format = tab[1]
             else:
                 print("parametre inconnu :",tab[0])
+    
+    #= valeur par défaut
+    if operation == "soustraction" and maxValue==-1:
+        maxValue = 19
+    if minValue == -1:
+        minValue=1
+    if maxValue == -1:
+        maxValue=9
 
     operations = generate(nbOperations=nbOperations,minValue=minValue,maxValue=maxValue,operation=operation)
     outputfile = "addirap-" + operation + "-" + niveau + "-" + datetime.datetime.now().strftime("%Y%m%d") + "." + format

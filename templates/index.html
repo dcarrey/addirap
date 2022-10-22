@@ -77,7 +77,9 @@
                         <input class="btn btn-primary" type="submit" value="Go">
                       </div>
                     </form>
-                    <a href="/getDocx">Télécharger une grille aléatoire</a>
+                    {% if outputfile %}
+                      <a href="/grilles/{{outputfile}}">Télécharger la grille (docx)</a>
+                    {% endif %}
                   </h5>
                 </div>
               </div>
