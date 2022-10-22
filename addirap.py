@@ -13,12 +13,14 @@ from docx.enum.section import WD_SECTION,WD_ORIENT
 from docx.enum.text import WD_ALIGN_PARAGRAPH,WD_BREAK
 from docx.oxml.ns import qn
 import sys
+import os
 import datetime
 import json
 
 letter = {"width":21.51,"height":27.94}
 half_letter = {"width":21.51,"height":13.97}
 symboles = {"addition":"+","soustraction":"-"}
+folder = "data"
 
 def help():
     chaine="""
@@ -30,7 +32,7 @@ def help():
     niveau=[facile|moyen(défaut)|difficile]
     """
     print(chaine)
-    
+
 def getSymbole(operation):
     return symboles[operation]
 
@@ -196,8 +198,9 @@ def main(parametres):
         maxValue=9
 
     operations = generate(nbOperations=nbOperations,minValue=minValue,maxValue=maxValue,operation=operation)
-    outputfile = "addirap-" + operation + "-" + niveau + "-" + datetime.datetime.now().strftime("%Y%m%d") + "." + format
+    outputfile = folder + "/addirap-" + operation + "-" + niveau + "-" + datetime.datetime.now().strftime("%Y%m%d") + "." + format
     afficher(format,niveau,operations,operation=operation,outputfile=outputfile)
 
 if __name__ == "__main__":
+    os.mkdir(folder)
     main(sys.argv)
