@@ -42,8 +42,7 @@ def validateOperation(operation):
         sys.exit(1)
     return operation
 
-
-def soustraction(minValue=1,maxValue=19):
+def soustraction(minValue=1,maxValue=18):
     while True:
         a = randint(minValue,maxValue)
         b = randint(1,9)
@@ -141,7 +140,6 @@ def saveJson(niveau,operations,operation,outputfile):
     print(json_object,file=out)
     out.close()
 
-
 def afficher(format,niveau,operations,operation="addition",outputfile="addirap.docx"):
     if format == "docx":
         saveDocx(niveau,operations,operation,outputfile)
@@ -201,6 +199,10 @@ def main(parametres):
     outputfile = folder + "/addirap-" + operation + "-" + niveau + "-" + datetime.datetime.now().strftime("%Y%m%d") + "." + format
     afficher(format,niveau,operations,operation=operation,outputfile=outputfile)
 
+def createDataFolder():
+    if not os.path.exists(folder):
+        os.mkdir(folder)
+    
 if __name__ == "__main__":
-    os.mkdir(folder)
+    createDataFolder()
     main(sys.argv)
