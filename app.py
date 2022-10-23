@@ -13,6 +13,7 @@ import addirap, random, uuid
 app = Flask(__name__)
 app.secret_key = 'secret22'
 
+MAX_VALUE = {"addition":9,"soustraction":18}
 @app.route('/newGrid', methods=['POST'])
 def newGrid():
     if 'id' not in session.keys():
@@ -20,7 +21,7 @@ def newGrid():
     operation    = request.form.get('operation')
     nbOperations = int(request.form.get('nbOperations'))
     duree        = int(request.form.get('duree'))
-    operations   = addirap.generate(nbOperations=nbOperations,operation=operation)
+    operations   = addirap.generate(nbOperations=nbOperations,operation=operation, maxValue=MAX_VALUE[operation])
     niveau       = "moyen"
     userId       = "alix"
     outputfile = "addirap-" + operation + "-" + niveau + "-" + str(session['id']) + ".docx"
